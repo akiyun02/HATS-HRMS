@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* Define Dark Mode Class Strategy for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* Unique Desaturated Purple Brand Palette */
+    --color-brand-50: oklch(0.97 0.015 285);
+    --color-brand-100: oklch(0.94 0.03 285);
+    --color-brand-200: oklch(0.88 0.06 285);
+    --color-brand-300: oklch(0.8 0.1 285);
+    --color-brand-400: oklch(0.7 0.13 285);
+    --color-brand-500: oklch(0.58 0.15 285); /* Main Accent */
+    --color-brand-600: oklch(0.48 0.14 285);
+    --color-brand-700: oklch(0.38 0.12 285);
+    --color-brand-800: oklch(0.28 0.1 285);
+    --color-brand-900: oklch(0.18 0.07 285);
+    --color-brand-950: oklch(0.12 0.05 285);
+}
+
+@layer base {
+  *, ::after, ::before {
+    @apply border-slate-200 dark:border-slate-800/60;
+  }
+
+  html, body {
+    @apply h-full transition-colors duration-300;
+  }
+
+  body {
+    /* Elegant Light Mode Background */
+    @apply bg-[#f8fafc] text-slate-900 dark:bg-[#09090b] dark:text-slate-100;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-2xl dark:bg-slate-900/70 dark:border-slate-800/50;
+  }
+  
+  .card-surface {
+    @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm sm:rounded-lg overflow-hidden transition-all duration-200;
+  }
+
+  .form-input {
+    @apply block w-full rounded-md border border-slate-300 dark:border-slate-700 py-2 px-3 text-slate-900 dark:text-white bg-white dark:bg-slate-800 shadow-sm placeholder:text-slate-400 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 sm:text-sm transition-all duration-200;
+  }
+
+  .form-label {
+    @apply block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-all duration-200;
+  }
+
+  .table-zebra tbody tr:nth-child(even) {
+    @apply bg-slate-50/50 dark:bg-slate-800/30;
+  }
+}
+
+/* Custom Scrollbar - More subtle */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-50 dark:bg-slate-900;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-sm dark:bg-slate-700;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-600;
+}
+
+/* Custom transitions for elements */
+.hover-card {
+  @apply hover:border-slate-300 dark:hover:border-slate-700 hover:shadow transition-all duration-200;
+}
