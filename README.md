@@ -1,58 +1,81 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HATS HRMS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern, comprehensive Human Resource Management System built with Laravel, designed to streamline employee lifecycle management, from recruitment and onboarding to payroll and performance evaluation.
 
-## About Laravel
+## 🌟 Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Employee Management & Onboarding**: Multi-step onboarding wizard with auto-generated credentials, centralized 201 file management, and department/role assignments.
+- **Leave & Attendance Tracking**: Automated leave policy assignment, prorated entitlement generation, leave ledger management, and attendance corrections.
+- **Payroll System**: Integrated compensation tracking and automated payroll draft generation.
+- **Recruitment & Applicant Tracking**: Manage job postings, track applicants, evaluate candidates, and convert successful applicants directly into employees.
+- **Performance Reviews**: Systematic performance evaluation tracking and administration.
+- **Role-Based Access Control (RBAC)**: Fine-grained permissions for HR Admins, Managers, and standard Employees.
+- **Audit Logging**: Comprehensive system activity tracking for security and compliance.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠 Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 11+
+- **Language**: PHP 8.4
+- **Frontend**: Blade components, Tailwind CSS v4, Alpine.js
+- **Testing**: Pest PHP
+- **Development Tools**: Laravel Boost, Laravel Pint
 
-## Learning Laravel
+## 🚀 Getting Started
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Prerequisites
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP >= 8.3
+- Composer
+- Node.js & NPM
+- SQLite / MySQL / PostgreSQL
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Installation
 
-## Agentic Development
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/akiyun02/HATS-HRMS.git
+   cd HATS-HRMS
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-```bash
-composer require laravel/boost --dev
+3. **Install JavaScript dependencies**
+   ```bash
+   npm install
+   ```
 
-php artisan boost:install
-```
+4. **Environment Setup**
+   Copy the example `.env` file and generate an application key:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Configure your database credentials inside `.env`.*
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+5. **Run Migrations & Seeders**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-## Contributing
+6. **Compile Frontend Assets**
+   ```bash
+   npm run dev
+   # or for production: npm run build
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+7. **Serve the Application**
+   ```bash
+   php artisan serve
+   ```
+   *If using Laravel Herd, the application will be available automatically at `http://hats-hr-portal.test`.*
 
-## Code of Conduct
+## 🔒 Security Vulnerabilities
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+If you discover a security vulnerability within this project, please report it to the repository maintainers rather than using public issue trackers.
 
-## Security Vulnerabilities
+## 📄 License
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
