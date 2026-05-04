@@ -34,6 +34,11 @@ class LeaveEntitlementService
         $year = now()->year;
 
         foreach ($policy->leaveTypes as $leaveType) {
+            // Check gender eligibility for specific leave types
+            if (!$this->isEligibleForLeaveType($user, $leaveType)) {
+                continue;
+            }
+
             $annualDays = $leaveType->pivot->annual_days;
             $accrualType = $leaveType->pivot->accrual_type;
 
@@ -48,6 +53,27 @@ class LeaveEntitlementService
                 $this->createLedgerEntry($user, $leaveType->id, $amount, 'allocation', "Initial entitlement allocation for policy: {$policy->name}");
             }
         }
+    }
+
+    /**
+     * Check if an employee is eligible for a specific leave type based on gender.
+     */
+    protected function isEligibleForLeaveType(User $user, LeaveType $leaveType): bool
+    {
+        $gender = $user->employeeProfile->gender;
+        $typeName = strtolower($leaveType->name);
+
+        // Maternity & VAWC are for Females
+        if ((str_contains($typeName, 'maternity') || str_contains($typeName, 'vawc')) && $gender !== 'Female') {
+            return false;
+        }
+
+        // Paternity is for Males
+        if (str_contains($typeName, 'paternity') && $gender !== 'Male') {
+            return false;
+        }
+
+        return true;
     }
 
     /**

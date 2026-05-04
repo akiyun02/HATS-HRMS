@@ -201,8 +201,38 @@
                             </div>
                         </div>
 
-                        <!-- Step 5: System Access -->
+                        <!-- Step 5: Initial Adjustments -->
                         <div x-show="currentStep === 5" x-cloak>
+                            <h3 class="text-lg font-bold leading-6 text-slate-900 dark:text-white mb-2">Initial Leave Adjustments</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Manually adjust starting balances (e.g. carried over from previous employment). These will be added to the policy entitlements.</p>
+                            
+                            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+                                    <thead class="bg-slate-50 dark:bg-slate-800/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider">Leave Category</th>
+                                            <th class="px-6 py-3 text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider w-40">Adjustment (Days)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                        @foreach($leaveTypes as $index => $type)
+                                        <tr>
+                                            <td class="px-6 py-4">
+                                                <input type="hidden" name="initial_adjustments[{{ $index }}][leave_type_id]" value="{{ $type->id }}">
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">{{ $type->name }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-center">
+                                                <input type="number" name="initial_adjustments[{{ $index }}][amount]" step="0.5" value="0" class="form-input w-24 text-center text-sm font-bold">
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Step 6: System Access -->
+                        <div x-show="currentStep === 6" x-cloak>
                             <h3 class="text-lg font-bold leading-6 text-slate-900 dark:text-white mb-4">System Access</h3>
                             <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                                 <div class="sm:col-span-6">
@@ -237,8 +267,8 @@
                             </div>
                         </div>
 
-                        <!-- Step 6: Review -->
-                        <div x-show="currentStep === 6" x-cloak>
+                        <!-- Step 7: Review -->
+                        <div x-show="currentStep === 7" x-cloak>
                             <h3 class="text-lg font-bold leading-6 text-slate-900 dark:text-white mb-4">Review & Submit</h3>
                             <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-6 space-y-6 border border-slate-100 dark:border-slate-700">
                                 <div>
@@ -319,6 +349,7 @@
                     { title: 'Employment' },
                     { title: 'Compensation' },
                     { title: 'Leave Policy' },
+                    { title: 'Adjustments' },
                     { title: 'System Access' },
                     { title: 'Review' }
                 ],
@@ -338,6 +369,7 @@
                     probation_end_date: '{{ old('probation_end_date') }}',
                     base_salary: '{{ old('base_salary') }}',
                     leave_policy_id: '{{ old('leave_policy_id') }}',
+                    initial_adjustments: [],
                     role_id: '{{ old('role_id') }}',
                     password: '',
                     password_confirmation: '',

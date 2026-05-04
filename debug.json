@@ -1,0 +1,32 @@
+{
+    "policies": [],
+    "latest_user": {
+        "id": 8,
+        "name": "Caolo Palma",
+        "email": "Caopao@example.com",
+        "email_verified_at": null,
+        "created_at": "2026-05-03T14:59:31.000000Z",
+        "updated_at": "2026-05-03T14:59:31.000000Z"
+    },
+    "latest_profile": {
+        "id": 4,
+        "user_id": 8,
+        "job_role_id": 1,
+        "employee_id": null,
+        "joining_date": "2026-05-02T16:00:00.000000Z",
+        "phone": "12341231233",
+        "address": "Angeles",
+        "emergency_contact_name": "Phris Camandanan",
+        "emergency_contact_phone": "123412342",
+        "created_at": "2026-05-03T14:59:31.000000Z",
+        "updated_at": "2026-05-03T14:59:31.000000Z",
+        "base_salary": "176975.00",
+        "gender": "Male",
+        "birthday": "2005-04-13T16:00:00.000000Z",
+        "marital_status": "Married",
+        "leave_policy_id": null,
+        "probation_end_date": null,
+        "is_regularized": false
+    },
+    "latest_ledgers": []
+}

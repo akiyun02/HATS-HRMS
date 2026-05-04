@@ -47,10 +47,22 @@
 
                 <div>
                     <button type="submit" class="flex w-full justify-center rounded-md bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 transition-all uppercase tracking-wide">
-                        Access Account
+                        Login
                     </button>
                 </div>
             </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    Want to join our team?
+                </p>
+                <a href="{{ route('careers.index') }}" class="mt-2 inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-500 transition-colors">
+                    Browse Job Openings
+                    <svg class="ml-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
         </div>
         
         <p class="mt-10 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-slate-600">

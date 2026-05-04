@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobApplicant;
 use App\Models\JobPosting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RecruitmentController extends Controller
@@ -36,10 +38,10 @@ class RecruitmentController extends Controller
     public function index()
     {
         $jobs = JobPosting::withCount('applicants')->latest()->get();
-        
+
         // Eager load applicants for the active pipeline view
-        $applicants = \App\Models\JobApplicant::with('jobPosting')->orderBy('created_at', 'desc')->get();
-        
+        $applicants = JobApplicant::with('jobPosting')->orderBy('created_at', 'desc')->get();
+
         $pipeline = [
             'Applied' => $applicants->where('status', 'Applied'),
             'Screening' => $applicants->where('status', 'Screening'),
@@ -67,5 +69,27 @@ class RecruitmentController extends Controller
         JobPosting::create($validated);
 
         return redirect()->route('recruitment.index')->with('success', 'Job posting created.');
+    }
+
+    public function toggleStatus(JobPosting $job)
+    {
+        $newStatus = $job->status === 'Open' ? 'Closed' : 'Open';
+        $job->update(['status' => $newStatus]);
+
+        return back()->with('success', "Job posting is now {$newStatus}.");
+    }
+
+    public function destroy(JobPosting $job)
+    {
+        // Manually delete resumes for all applicants of this job posting
+        foreach ($job->applicants as $applicant) {
+            if ($applicant->resume_path) {
+                Storage::disk('public')->delete($applicant->resume_path);
+            }
+        }
+
+        $job->delete();
+
+        return redirect()->route('recruitment.index')->with('success', 'Job posting and associated data removed successfully.');
     }
 }

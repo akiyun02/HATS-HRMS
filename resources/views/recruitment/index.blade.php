@@ -20,12 +20,31 @@
     <!-- Active Postings Quick View -->
     <div class="flex gap-4 overflow-x-auto pb-2 shrink-0 no-scrollbar">
         @foreach($jobs as $job)
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md p-3 min-w-[250px] shadow-sm flex justify-between items-center shrink-0">
-            <div>
-                <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ $job->title }}</h4>
-                <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{{ $job->applicants_count }} Applicants</p>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md p-3 min-w-[280px] shadow-sm flex flex-col gap-2 shrink-0">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ $job->title }}</h4>
+                    <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">{{ $job->applicants_count }} Applicants</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest {{ $job->status === 'Open' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' }}">
+                        {{ $job->status }}
+                    </span>
+                    <form action="{{ route('recruitment.destroy', $job) }}" method="POST" onsubmit="return confirm('Permanently delete this job opening and all associated applicants?')">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="text-slate-400 hover:text-red-500 transition-colors">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </form>
+                </div>
             </div>
-            <span class="h-2 w-2 rounded-full {{ $job->status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300' }}"></span>
+            
+            <form action="{{ route('recruitment.toggle-status', $job) }}" method="POST">
+                @csrf @method('PATCH')
+                <button type="submit" class="w-full text-center py-1 rounded border border-slate-200 dark:border-slate-700 text-[9px] font-bold uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    {{ $job->status === 'Open' ? 'Close Opening' : 'Re-open Opening' }}
+                </button>
+            </form>
         </div>
         @endforeach
     </div>
@@ -42,21 +61,28 @@
                     </span>
                 </div>
                 
-                <div class="p-3 flex-1 overflow-y-auto space-y-3">
+                <div class="p-3 flex-1 overflow-y-auto space-y-3 kanban-column" data-status="{{ $stage }}">
                     @foreach($pipeline[$stage] as $candidate)
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md p-4 shadow-sm hover:border-brand-500 transition-colors group relative cursor-pointer" onclick="openCandidateModal({{ $candidate }})">
-                        <div class="flex justify-between items-start mb-2">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md p-4 shadow-sm hover:border-brand-500 transition-colors group relative cursor-grab active:cursor-grabbing" 
+                         data-id="{{ $candidate->id }}"
+                         onclick="openCandidateModal({{ $candidate }})">
+                        <div class="flex justify-between items-start mb-1">
                             <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ $candidate->first_name }} {{ $candidate->last_name }}</h4>
-                            @if($candidate->resume_path)
-                            <a href="{{ Storage::url($candidate->resume_path) }}" target="_blank" onclick="event.stopPropagation()" class="text-slate-400 hover:text-brand-600">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                            </a>
-                            @endif
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">{{ $candidate->created_at->format('M d') }}</span>
                         </div>
-                        <p class="text-xs font-semibold text-brand-600 dark:text-brand-400 truncate">{{ $candidate->jobPosting->title }}</p>
-                        <div class="mt-3 flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                            <span>{{ $candidate->created_at->format('M d') }}</span>
-                            
+                        <p class="text-xs font-semibold text-brand-600 dark:text-brand-400 truncate mb-3">{{ $candidate->jobPosting->title }}</p>
+                        
+                        @if($candidate->resume_path)
+                        <div class="mb-3">
+                            <a href="{{ Storage::url($candidate->resume_path) }}" target="_blank" onclick="event.stopPropagation()" 
+                               class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-slate-50 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 transition-all border border-slate-200 dark:border-slate-700 w-full justify-center shadow-sm">
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                VIEW RESUME
+                            </a>
+                        </div>
+                        @endif
+
+                        <div class="flex items-center justify-end text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             <!-- Quick Move Actions -->
                             <form action="{{ route('applicants.update-status', $candidate) }}" method="POST" onclick="event.stopPropagation()" class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 @csrf @method('PATCH')
@@ -84,7 +110,7 @@
                     </div>
                     @endforeach
                     @if(count($pipeline[$stage]) === 0)
-                    <div class="p-4 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-md">
+                    <div class="p-4 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-md empty-placeholder">
                         <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">No Candidates</p>
                     </div>
                     @endif
@@ -138,10 +164,65 @@
             <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Cover Letter</p>
             <div id="c-cover" class="bg-slate-50 dark:bg-slate-800 p-4 rounded-md text-sm text-slate-600 dark:text-slate-400 italic"></div>
         </div>
+
+        <div class="px-6 pb-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end bg-slate-50/50 dark:bg-slate-800/30">
+            <form id="delete-applicant-form" method="POST" onsubmit="return confirm('Are you sure you want to permanently remove this applicant and their resume?')">
+                @csrf @method('DELETE')
+                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-500/20 uppercase tracking-widest">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    Remove Applicant
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
+    // Initialize Drag and Drop
+    document.querySelectorAll('.kanban-column').forEach(column => {
+        new Sortable(column, {
+            group: 'recruitment',
+            animation: 150,
+            ghostClass: 'opacity-50',
+            chosenClass: 'border-brand-500',
+            onEnd: function (evt) {
+                const applicantId = evt.item.getAttribute('data-id');
+                const newStatus = evt.to.getAttribute('data-status');
+                const oldStatus = evt.from.getAttribute('data-status');
+
+                if (newStatus === oldStatus) return;
+
+                updateApplicantStatus(applicantId, newStatus);
+            }
+        });
+    });
+
+    async function updateApplicantStatus(id, status) {
+        try {
+            const response = await fetch(`/admin/applicants/${id}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ status: status })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update status');
+            }
+            
+            // Reload to update counts and UI state
+            window.location.reload();
+        } catch (error) {
+            console.error(error);
+            alert('Error updating applicant status. Please try again.');
+            window.location.reload();
+        }
+    }
+
     function openCandidateModal(candidate) {
         document.getElementById('c-name').textContent = candidate.first_name + ' ' + candidate.last_name;
         document.getElementById('c-job').textContent = candidate.job_posting.title;
@@ -151,6 +232,7 @@
         
         document.querySelector('select[name="status"]').value = candidate.status;
         document.getElementById('status-form').action = `/admin/applicants/${candidate.id}/status`;
+        document.getElementById('delete-applicant-form').action = `/admin/applicants/${candidate.id}`;
         
         document.getElementById('candidate-modal').classList.remove('hidden');
     }

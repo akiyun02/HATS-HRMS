@@ -8,12 +8,14 @@
             <div class="h-16 w-16 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-brand-600 dark:text-brand-400 text-2xl font-bold shadow-sm">
                 {{ substr($employee->name, 0, 1) }}
             </div>
-            <div>
+                    <div>
                 <h2 class="text-xl font-bold leading-tight text-slate-900 dark:text-white sm:text-2xl">{{ $employee->name }}</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
-                    <span class="text-brand-600">{{ $employee->employeeProfile?->jobRole?->name ?? 'Position Not Assigned' }}</span>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+                    <span class="text-brand-600 uppercase tracking-wider">{{ $employee->employeeProfile?->jobRole?->name ?? 'Position Not Assigned' }}</span>
                     <span class="mx-2 text-slate-300 dark:text-slate-700">•</span>
-                    ID: {{ $employee->employeeProfile?->employee_id ?? 'N/A' }}
+                    <span class="text-slate-400">ID: {{ $employee->employeeProfile?->employee_id ?? 'N/A' }}</span>
+                    <span class="mx-2 text-slate-300 dark:text-slate-700">•</span>
+                    <span class="text-slate-400 uppercase tracking-tighter">Policy: {{ $employee->employeeProfile?->leavePolicy?->name ?? 'None' }}</span>
                 </p>
             </div>
         </div>
@@ -180,9 +182,12 @@
             <div class="bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
                     <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Leave Entitlement</h3>
-                    @can('hr')
-                    <button onclick="document.getElementById('balance-modal').classList.remove('hidden')" class="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:text-brand-500 transition-colors">Adjust</button>
-                    @endcan
+                    <div class="flex gap-2">
+                        <button onclick="document.getElementById('history-modal').classList.remove('hidden')" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest hover:text-brand-600 transition-colors">History</button>
+                        @can('hr')
+                        <button onclick="document.getElementById('balance-modal').classList.remove('hidden')" class="text-[10px] font-bold text-brand-600 uppercase tracking-widest hover:text-brand-500 transition-colors">Adjust</button>
+                        @endcan
+                    </div>
                 </div>
                 <div class="p-6 space-y-6">
                     @forelse($employee->leaveBalances->where('year', now()->year) as $balance)
@@ -254,25 +259,80 @@
                     @endforeach
                 </select>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="form-label">Accrued (Total)</label>
-                    <input type="number" name="accrued_days" step="0.5" required class="form-input" placeholder="0.0">
-                </div>
-                <div>
-                    <label class="form-label">Used (Consumed)</label>
-                    <input type="number" name="used_days" step="0.5" required class="form-input" placeholder="0.0">
-                </div>
-            </div>
+            
             <div>
-                <label class="form-label">Calendar Year</label>
-                <input type="number" name="year" value="{{ now()->year }}" required class="form-input">
+                <label class="form-label">Adjustment Amount (Days)</label>
+                <input type="number" name="accrued_days" step="0.5" required class="form-input" placeholder="0.0">
+                <p class="mt-1 text-[10px] text-slate-500 italic">Use positive numbers to add days, negative to subtract.</p>
             </div>
+
+            <div>
+                <label class="form-label">Reason for Adjustment</label>
+                <textarea name="reason" required class="form-input" rows="2" placeholder="e.g. Correction of initial entitlement, Performance bonus leave, etc."></textarea>
+                <div class="mt-2 flex flex-wrap gap-1">
+                    <button type="button" onclick="document.getElementsByName('reason')[0].value='Correction of initial entitlement'" class="text-[9px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 transition-colors">Correction</button>
+                    <button type="button" onclick="document.getElementsByName('reason')[0].value='Performance bonus leave'" class="text-[9px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 transition-colors">Performance Bonus</button>
+                    <button type="button" onclick="document.getElementsByName('reason')[0].value='Carry-over adjustment'" class="text-[9px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 transition-colors">Carry-over</button>
+                </div>
+            </div>
+
             <div class="pt-4 flex gap-3">
                 <button type="button" onclick="document.getElementById('balance-modal').classList.add('hidden')" class="flex-1 py-2 text-sm font-bold text-slate-500 border border-slate-200 dark:border-slate-700 rounded-md hover:bg-slate-50 transition-colors">Cancel</button>
-                <button type="submit" class="flex-1 bg-brand-600 text-white py-2 rounded-md text-sm font-bold shadow-sm hover:bg-brand-700 transition-colors">Apply Changes</button>
+                <button type="submit" class="flex-1 bg-brand-600 text-white py-2 rounded-md text-sm font-bold shadow-sm hover:bg-brand-700 transition-colors">Adjust Balance</button>
             </div>
         </form>
+    </div>
+</div>
+
+    </div>
+</div>
+
+<!-- History Modal -->
+<div id="history-modal" class="fixed inset-0 z-[110] hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 transition-all" onclick="if(event.target === this) this.classList.add('hidden')">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-lg shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800" onclick="event.stopPropagation()">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider">Leave Ledger History</h3>
+            <button onclick="document.getElementById('history-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="p-0 overflow-y-auto max-h-[500px]">
+            <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800 text-left">
+                <thead class="bg-slate-50 dark:bg-slate-800/50 sticky top-0">
+                    <tr>
+                        <th class="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase">Date</th>
+                        <th class="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase">Type</th>
+                        <th class="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase text-center">Amount</th>
+                        <th class="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase">Reason</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50 dark:divide-slate-800 bg-white dark:bg-slate-900">
+                    @forelse($employee->leaveLedgerEntries()->with('leaveType')->latest()->get() as $entry)
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-xs font-semibold text-slate-900 dark:text-white">{{ $entry->created_at->format('M d, Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase border 
+                                {{ $entry->type === 'allocation' ? 'border-brand-100 bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400' : 
+                                   ($entry->type === 'adjustment' ? 'border-amber-100 bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400' : 
+                                   'border-slate-100 bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-400') }}">
+                                {{ $entry->type }}
+                            </span>
+                            <div class="text-[9px] text-slate-400 font-bold uppercase mt-1">{{ $entry->leaveType->name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-xs font-bold {{ $entry->amount > 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                            {{ $entry->amount > 0 ? '+' : '' }}{{ $entry->amount }}
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{{ $entry->description }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="4" class="py-12 text-center text-sm text-slate-400 italic">No ledger transactions found.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-end">
+            <button onclick="document.getElementById('history-modal').classList.add('hidden')" class="px-4 py-2 text-xs font-bold text-slate-600 uppercase tracking-widest hover:text-slate-900 transition-colors">Close</button>
+        </div>
     </div>
 </div>
 
@@ -305,7 +365,7 @@
                 <input type="file" name="document" id="document" required accept="application/pdf,image/*,.doc,.docx" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-600 hover:file:bg-brand-100 transition-all cursor-pointer">
             </div>
             <div class="flex gap-3 pt-4">
-                <button type="button" onclick="document.getElementById('upload-modal').classList.add('hidden')" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">Cancel</button>
+                <button type="button" onclick="document.getElementById('upload-modal').classList.add('hidden')" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">    </button>
                 <button type="submit" class="flex-1 bg-brand-600 text-white py-2 rounded-md text-sm font-bold shadow-sm hover:bg-brand-700 transition-all">Upload Now</button>
             </div>
         </form>

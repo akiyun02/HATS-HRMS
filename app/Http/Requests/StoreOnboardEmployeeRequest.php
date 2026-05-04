@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +19,7 @@ class StoreOnboardEmployeeRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -48,6 +49,11 @@ class StoreOnboardEmployeeRequest extends FormRequest
             'role_id' => ['nullable', 'exists:roles,id'],
             'send_invite_email' => ['boolean'],
             'leave_policy_id' => ['nullable', 'exists:leave_policies,id'],
+
+            // Initial Leave Adjustments
+            'initial_adjustments' => ['nullable', 'array'],
+            'initial_adjustments.*.leave_type_id' => ['required_with:initial_adjustments', 'exists:leave_types,id'],
+            'initial_adjustments.*.amount' => ['required_with:initial_adjustments', 'numeric'],
         ];
     }
 }

@@ -60,9 +60,17 @@
                                             </a>
                                         </li>
                                         <li>
+                                            <a href="{{ route('leave-policies.index') }}" class="{{ request()->routeIs('leave-policies.*') ? 'bg-slate-50 text-brand-700 dark:bg-slate-800 dark:text-brand-400 border-slate-200 dark:border-slate-700 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-700 dark:hover:text-brand-400 hover:bg-slate-50 dark:hover:bg-slate-800 border-transparent' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold border transition-all duration-200">
+                                                <svg class="h-5 w-5 shrink-0 {{ request()->routeIs('leave-policies.*') ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 group-hover:text-brand-600 dark:group-hover:text-brand-400' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.966 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
+                                                </svg>
+                                                Leave Policies
+                                            </a>
+                                        </li>
+                                        <li>
                                             <a href="{{ route('recruitment.index') }}" class="{{ request()->routeIs('recruitment.*') ? 'bg-slate-50 text-brand-700 dark:bg-slate-800 dark:text-brand-400 border-slate-200 dark:border-slate-700 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-700 dark:hover:text-brand-400 hover:bg-slate-50 dark:hover:bg-slate-800 border-transparent' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold border transition-all duration-200">
                                                 <svg class="h-5 w-5 shrink-0 {{ request()->routeIs('recruitment.*') ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 group-hover:text-brand-600 dark:group-hover:text-brand-400' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a5.971 5.971 0 00-.941 3.197" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 013.75 18.4V14.15m16.5 0a2.125 2.125 0 00-2.125-2.125H5.875A2.125 2.125 0 003.75 14.15m16.5 0a2.125 2.125 0 01-2.125 2.125H5.875a2.125 2.125 0 01-2.125-2.125M12 6.75v6m-3-3h6m-3-3c1.352 0 2.484.912 2.766 2.131.066.287.1.584.1.869H9.135c0-.285.033-.582.1-.869.282-1.219 1.414-2.131 2.766-2.131z" />
                                                 </svg>
                                                 Recruitment
                                             </a>
@@ -94,7 +102,7 @@
                                         <li>
                                             <a href="{{ route('audit-logs.index') }}" class="{{ request()->routeIs('audit-logs.*') ? 'bg-slate-50 text-brand-700 dark:bg-slate-800 dark:text-brand-400 border-slate-200 dark:border-slate-700 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-700 dark:hover:text-brand-400 hover:bg-slate-50 dark:hover:bg-slate-800 border-transparent' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold border transition-all duration-200">
                                                 <svg class="h-5 w-5 shrink-0 {{ request()->routeIs('audit-logs.*') ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 group-hover:text-brand-600 dark:group-hover:text-brand-400' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .415.162.791.425 1.066.262.275.612.443.975.443.363 0 .713-.168.975-.443.263-.275.425-.651.425-1.066 0-.231-.035-.454-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25c.61 0 1.15.242 1.543.634.394.392.634.931.634 1.538 0 .231-.035.454-.1.664" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                                                 </svg>
                                                 Audit Logs
                                             </a>

@@ -21,7 +21,19 @@ class ApplicantController extends Controller
             'phone' => 'nullable|string|max:20',
             'resume' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'cover_letter' => 'nullable|string',
+            'hp_field' => 'nullable|string', // Honeypot field
         ]);
+
+        // 1. Honeypot Check (Bot detection)
+        if (! empty($validated['hp_field'])) {
+            return back()->with('error', 'Spam detected.');
+        }
+
+        // 2. Duplicate Application Check (Once per job)
+        $existing = $job->applicants()->where('email', $validated['email'])->first();
+        if ($existing) {
+            return back()->with('error', 'You have already submitted an application for this position. Please wait for our team to contact you.');
+        }
 
         $resumePath = $request->file('resume')->store('resumes', 'public');
 
@@ -47,13 +59,29 @@ class ApplicantController extends Controller
     public function updateStatus(Request $request, JobApplicant $applicant)
     {
         $validated = $request->validate([
-            'status' => 'required|in:Applied,Screening,Interview,Offer,Hired,Rejected'
+            'status' => 'required|in:Applied,Screening,Interview,Offer,Hired,Rejected',
         ]);
 
         $applicant->update(['status' => $validated['status']]);
 
-        // If hired, an event should be fired to onboard them. (To be added later via Events)
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Applicant status updated to {$validated['status']}",
+            ]);
+        }
 
         return back()->with('success', "Applicant status updated to {$validated['status']}");
+    }
+
+    public function destroy(JobApplicant $applicant)
+    {
+        if ($applicant->resume_path) {
+            Storage::disk('public')->delete($applicant->resume_path);
+        }
+
+        $applicant->delete();
+
+        return redirect()->route('recruitment.index')->with('success', 'Applicant removed successfully.');
     }
 }

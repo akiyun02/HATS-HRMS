@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOnboardEmployeeRequest;
 use App\Models\Department;
+use App\Models\LeavePolicy;
+use App\Models\LeaveType;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\LeavePolicy;
-use App\Http\Requests\StoreOnboardEmployeeRequest;
 use App\Services\Employee\OnboardEmployeeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EmployeeController extends Controller
@@ -75,8 +75,9 @@ class EmployeeController extends Controller
         $departments = Department::with('jobRoles')->get();
         $roles = Role::all();
         $leavePolicies = LeavePolicy::all();
+        $leaveTypes = LeaveType::all();
 
-        return view('employees.create', compact('departments', 'roles', 'leavePolicies'));
+        return view('employees.create', compact('departments', 'roles', 'leavePolicies', 'leaveTypes'));
     }
 
     public function store(StoreOnboardEmployeeRequest $request, OnboardEmployeeService $onboardService)
@@ -84,9 +85,9 @@ class EmployeeController extends Controller
         $result = $onboardService->onboard($request->validated());
 
         $message = 'Employee onboarded successfully with leave entitlements.';
-        
+
         if ($result['was_auto_generated']) {
-            $message .= ' Their auto-generated password is: ' . $result['plain_password'];
+            $message .= ' Their auto-generated password is: '.$result['plain_password'];
         }
 
         return redirect()->route('employees.index')->with('success', $message);

@@ -2,12 +2,14 @@
 
 namespace App\Services\Employee;
 
+use App\Mail\EmployeeWelcomeMail;
+use App\Models\LeavePolicy;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\LeavePolicy;
 use App\Services\Leave\LeaveEntitlementService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class OnboardEmployeeService
@@ -19,7 +21,7 @@ class OnboardEmployeeService
     /**
      * Handle the full employee onboarding process.
      *
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return User
      */
     public function onboard(array $data): array
@@ -27,13 +29,13 @@ class OnboardEmployeeService
         return DB::transaction(function () use ($data) {
             $plainPassword = $data['password'] ?? Str::random(12);
             $user = $this->createUser($data, $plainPassword);
-            
+
             $this->assignRole($user, $data['role_id'] ?? null);
-            
+
             $this->createEmployeeProfile($user, $data);
-            
-            $this->setupLeaveEntitlements($user, $data['leave_policy_id'] ?? null);
-            
+
+            $this->setupLeaveEntitlements($user, $data['leave_policy_id'] ?? null, $data['initial_adjustments'] ?? []);
+
             // Payroll setup could be added here if needed (e.g. creating default payroll components)
             // $this->setupPayroll($user, $data);
 
@@ -60,6 +62,7 @@ class OnboardEmployeeService
             $role = Role::find($roleId);
             if ($role) {
                 $user->roles()->attach($role);
+
                 return;
             }
         }
@@ -73,7 +76,7 @@ class OnboardEmployeeService
 
     private function createEmployeeProfile(User $user, array $data): void
     {
-        $user->employeeProfile()->create([
+        $profile = $user->employeeProfile()->create([
             'job_role_id' => $data['job_role_id'],
             'base_salary' => $data['base_salary'] ?? 0,
             'employee_id' => $data['employee_id'] ?? null,
@@ -88,16 +91,30 @@ class OnboardEmployeeService
             'emergency_contact_phone' => $data['emergency_contact_phone'] ?? null,
             'leave_policy_id' => $data['leave_policy_id'] ?? LeavePolicy::where('is_default', true)->first()?->id,
         ]);
+
+        $user->setRelation('employeeProfile', $profile);
     }
 
-    private function setupLeaveEntitlements(User $user, ?int $policyId): void
+    private function setupLeaveEntitlements(User $user, ?int $policyId, array $initialAdjustments = []): void
     {
-        $policy = LeavePolicy::find($policyId) 
+        $policy = LeavePolicy::find($policyId)
                   ?? LeavePolicy::where('is_default', true)->first();
 
         if ($policy) {
             // Assign policy and initialize leave ledger via the LeaveEntitlementService
             $this->leaveService->assignPolicy($user, $policy);
+
+            // Apply any manual initial adjustments
+            foreach ($initialAdjustments as $adj) {
+                if (! empty($adj['amount']) && $adj['amount'] != 0) {
+                    $this->leaveService->adjustBalance(
+                        $user,
+                        (int) $adj['leave_type_id'],
+                        (float) $adj['amount'],
+                        'Initial onboarding adjustment'
+                    );
+                }
+            }
         }
     }
 
@@ -109,7 +126,6 @@ class OnboardEmployeeService
 
     private function sendInviteEmail(User $user, ?string $plainPassword): void
     {
-        // Send email with credentials to the user
-        // Mail::to($user->email)->send(new EmployeeWelcomeMail($user, $plainPassword));
+        Mail::to($user->email)->send(new EmployeeWelcomeMail($user, $plainPassword));
     }
 }

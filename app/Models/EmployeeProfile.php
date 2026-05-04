@@ -41,6 +41,26 @@ class EmployeeProfile extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (EmployeeProfile $profile) {
+            if (empty($profile->employee_id)) {
+                $lastProfile = static::where('employee_id', 'like', 'EMP-%')
+                    ->orderByRaw('CAST(SUBSTRING(employee_id FROM 5) AS INTEGER) DESC')
+                    ->first();
+
+                if ($lastProfile) {
+                    $lastNumber = (int) substr($lastProfile->employee_id, 4);
+                    $newNumber = $lastNumber + 1;
+                } else {
+                    $newNumber = 1;
+                }
+
+                $profile->employee_id = 'EMP-'.str_pad((string) $newNumber, 3, '0', STR_PAD_LEFT);
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
