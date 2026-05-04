@@ -216,7 +216,7 @@
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                                         @foreach($leaveTypes as $index => $type)
-                                        <tr>
+                                        <tr x-show="shouldShowLeaveType('{{ strtolower($type->name) }}')" x-transition>
                                             <td class="px-6 py-4">
                                                 <input type="hidden" name="initial_adjustments[{{ $index }}][leave_type_id]" value="{{ $type->id }}">
                                                 <span class="text-sm font-bold text-slate-900 dark:text-white">{{ $type->name }}</span>
@@ -399,6 +399,16 @@
                     if (this.currentStep < this.steps.length) {
                         this.currentStep++;
                     }
+                },
+                shouldShowLeaveType(name) {
+                    const gender = this.formData.gender;
+                    if ((name.includes('maternity') || name.includes('vawc')) && gender !== 'Female') {
+                        return false;
+                    }
+                    if (name.includes('paternity') && gender !== 'Male') {
+                        return false;
+                    }
+                    return true;
                 },
                 getJobRoleName() {
                     if (!this.formData.job_role_id) return '';
