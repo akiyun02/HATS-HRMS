@@ -201,7 +201,7 @@
                             <input type="hidden" name="year" value="{{ now()->format('Y') }}">
                             <button type="submit" class="w-full py-2 text-xs font-bold bg-brand-600 text-white rounded shadow-sm hover:bg-brand-700 transition-colors">Generate Batch Drafts</button>
                         </form>
-                        <a href="{{ route('payroll.admin.index') }}" class="block mt-2 text-center py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded border border-slate-200 dark:border-slate-700 hover:bg-slate-100 transition-colors">View Registry</a>
+                        <a href="{{ route('payroll.index') }}" class="block mt-2 text-center py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded border border-slate-200 dark:border-slate-700 hover:bg-slate-100 transition-colors">View Registry</a>
                     </div>
                 </div>
             </div>
@@ -281,7 +281,7 @@
                 </div>
                 <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Settings</span>
             </a>
-            <a href="{{ route('payroll.admin.index') }}" class="flex items-center gap-3 p-3 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+            <a href="{{ route('payroll.index') }}" class="flex items-center gap-3 p-3 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                 <div class="bg-slate-100 dark:bg-slate-800 p-1.5 rounded">
                     <svg class="h-4 w-4 text-slate-600 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="1.5"/></svg>
                 </div>

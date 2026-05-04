@@ -45,7 +45,7 @@ class EmployeeProfile extends Model
     {
         static::creating(function (EmployeeProfile $profile) {
             if (empty($profile->employee_id)) {
-                $lastProfile = static::where('employee_id', 'like', 'EMP-%')
+                $lastProfile = static::where('employee_id', 'similar to', 'EMP-[0-9]+')
                     ->orderByRaw('CAST(SUBSTRING(employee_id FROM 5) AS INTEGER) DESC')
                     ->first();
 

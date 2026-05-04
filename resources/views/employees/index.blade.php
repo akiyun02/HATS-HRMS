@@ -48,7 +48,7 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" name="search" value="{{ request('search') }}" class="form-input pl-10"
+                        <input type="text" name="search" value="{{ request('search') }}" class="form-input pl-12"
                             placeholder="Search by name, email, or position...">
                     </div>
                 </div>

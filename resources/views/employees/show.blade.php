@@ -365,7 +365,7 @@
                 <input type="file" name="document" id="document" required accept="application/pdf,image/*,.doc,.docx" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-600 hover:file:bg-brand-100 transition-all cursor-pointer">
             </div>
             <div class="flex gap-3 pt-4">
-                <button type="button" onclick="document.getElementById('upload-modal').classList.add('hidden')" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">    </button>
+                <button type="button" onclick="document.getElementById('upload-modal').classList.add('hidden')" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">Cancel</button>
                 <button type="submit" class="flex-1 bg-brand-600 text-white py-2 rounded-md text-sm font-bold shadow-sm hover:bg-brand-700 transition-all">Upload Now</button>
             </div>
         </form>

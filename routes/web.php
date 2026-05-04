@@ -115,7 +115,19 @@ Route::middleware(['auth', 'network'])->group(function () {
         Route::patch('admin/recruitment/{job}/toggle', [RecruitmentController::class, 'toggleStatus'])->name('recruitment.toggle-status');
         Route::delete('admin/recruitment/{job}', [RecruitmentController::class, 'destroy'])->name('recruitment.destroy');
 
-        Route::get('admin/payroll', [PayrollController::class, 'index'])->name('payroll.admin.index');
+        Route::get('admin/biometrics', [BiometricController::class, 'index'])->name('biometrics.index');
+        Route::get('admin/biometrics/devices/create', [BiometricController::class, 'createDevice'])->name('biometrics.devices.create');
+        Route::post('admin/biometrics/devices', [BiometricController::class, 'storeDevice'])->name('biometrics.devices.store');
+        Route::get('admin/biometrics/devices/{device}/edit', [BiometricController::class, 'editDevice'])->name('biometrics.devices.edit');
+        Route::put('admin/biometrics/devices/{device}', [BiometricController::class, 'updateDevice'])->name('biometrics.devices.update');
+        Route::delete('admin/biometrics/devices/{device}', [BiometricController::class, 'destroyDevice'])->name('biometrics.devices.destroy');
+
+        Route::get('admin/biometrics/mapping', [BiometricController::class, 'mapping'])->name('biometrics.mapping');
+        Route::post('admin/biometrics/mapping', [BiometricController::class, 'storeMapping'])->name('biometrics.mapping.store');
+        Route::delete('admin/biometrics/mapping/{mapping}', [BiometricController::class, 'destroyMapping'])->name('biometrics.mapping.destroy');
+
+        Route::get('admin/biometrics', [BiometricController::class, 'index'])->name('biometrics.index');
+
         Route::get('admin/payroll/export', [PayrollController::class, 'exportCSV'])->name('payroll.export');
         Route::post('admin/payroll/auto', [PayrollController::class, 'autoProcess'])->name('payroll.bulk-generate');
         Route::post('admin/payroll/{user}/draft', [PayrollController::class, 'generateUserDraft'])->name('payroll.user-draft');
